@@ -131,11 +131,8 @@ export const featuresAPI = {
     return response.data;
   },
 
-  create: async (title: string, description: string): Promise<{ feature: Feature; message: string }> => {
-    const response: AxiosResponse<{ feature: Feature; message: string }> = await api.post('/features', {
-      title,
-      description,
-    });
+  create: async (data: { title: string; description: string }): Promise<{ feature: Feature; message: string }> => {
+    const response: AxiosResponse<{ feature: Feature; message: string }> = await api.post('/features', data);
     return response.data;
   },
 
@@ -155,25 +152,43 @@ export const featuresAPI = {
 
 // Votes API
 export const votesAPI = {
-  vote: async (featureId: number): Promise<VoteResponse> => {
+  create: async (featureId: number): Promise<VoteResponse> => {
     const response: AxiosResponse<VoteResponse> = await api.post('/votes', {
       featureId,
     });
     return response.data;
   },
 
-  removeVote: async (featureId: number): Promise<{ voteCount: number; message: string }> => {
+  delete: async (featureId: number): Promise<{ voteCount: number; message: string }> => {
     const response: AxiosResponse<{ voteCount: number; message: string }> = await api.delete(`/votes/${featureId}`);
     return response.data;
   },
 
-  getFeatureVotes: async (featureId: number): Promise<{
+  getByFeature: async (featureId: number): Promise<{
     voteCount: number;
-    votes: number;
-    voters: { userId: number; votedAt: string }[];
+    votes: { userId: number; votedAt: string }[];
   }> => {
     const response = await api.get(`/votes/feature/${featureId}`);
-    return response.data;
+    return {
+      voteCount: response.data.voteCount,
+      votes: response.data.voters || []
+    };
+  },
+
+  // Legacy methods (keep for backward compatibility)
+  vote: async (featureId: number): Promise<VoteResponse> => {
+    return votesAPI.create(featureId);
+  },
+
+  removeVote: async (featureId: number): Promise<{ voteCount: number; message: string }> => {
+    return votesAPI.delete(featureId);
+  },
+
+  getFeatureVotes: async (featureId: number): Promise<{
+    voteCount: number;
+    votes: { userId: number; votedAt: string }[];
+  }> => {
+    return votesAPI.getByFeature(featureId);
   },
 };
 

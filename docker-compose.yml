@@ -42,28 +42,6 @@ services:
       timeout: 10s
       retries: 3
 
-  mobile:
-    build:
-      context: ./mobile
-      dockerfile: Dockerfile
-    container_name: voting_mobile
-    ports:
-      - "8081:8081"
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-    environment:
-      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
-      REACT_NATIVE_PACKAGER_HOSTNAME: 0.0.0.0
-      API_BASE_URL: http://backend:3000
-    volumes:
-      - ./mobile:/app
-      - /app/node_modules
-    depends_on:
-      backend:
-        condition: service_healthy
-    stdin_open: true
-    tty: true
 
 volumes:
   postgres_data:

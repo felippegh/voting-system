@@ -31,18 +31,19 @@ export const FeatureDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isVoting, setIsVoting] = useState(false);
   const [userHasVoted, setUserHasVoted] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadFeature = async () => {
     try {
       setIsLoading(true);
       const featureResponse = await featuresAPI.getById(parseInt(featureId));
       setFeature(featureResponse.feature);
-      setVoteCount(featureResponse.feature.vote_count);
+      setVoteCount(Number(featureResponse.feature.vote_count));
       
       // Check if user has voted
       try {
         const voteResponse = await votesAPI.getByFeature(parseInt(featureId));
-        setUserHasVoted(voteResponse.votes.some(vote => vote.user_id === user?.id));
+        setUserHasVoted(voteResponse.votes.some(vote => vote.userId === user?.id));
       } catch (error) {
         console.log('Error checking vote status:', error);
         setUserHasVoted(false);
@@ -71,13 +72,13 @@ export const FeatureDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         // Remove vote
         await votesAPI.delete(feature.id);
         setUserHasVoted(false);
-        setVoteCount(prev => prev - 1);
+        setVoteCount(prev => Number(prev) - 1);
         Alert.alert('Success', 'Vote removed successfully');
       } else {
         // Add vote
         await votesAPI.create(feature.id);
         setUserHasVoted(true);
-        setVoteCount(prev => prev + 1);
+        setVoteCount(prev => Number(prev) + 1);
         Alert.alert('Success', 'Vote added successfully');
       }
     } catch (error: any) {
@@ -92,6 +93,49 @@ export const FeatureDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     } finally {
       setIsVoting(false);
     }
+  };
+
+  const handleDelete = async () => {
+    if (!feature || isDeleting) return;
+
+    Alert.alert(
+      'Delete Feature',
+      'Are you sure you want to delete this feature? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setIsDeleting(true);
+              await featuresAPI.delete(feature.id);
+              Alert.alert(
+                'Success',
+                'Feature deleted successfully',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => navigation.goBack()
+                  }
+                ]
+              );
+            } catch (error: any) {
+              console.error('Error deleting feature:', error);
+              
+              let errorMessage = 'Failed to delete feature. Please try again.';
+              if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+              }
+              
+              Alert.alert('Error', errorMessage);
+            } finally {
+              setIsDeleting(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   if (isLoading) {
@@ -152,6 +196,24 @@ export const FeatureDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           </Text>
         )}
       </TouchableOpacity>
+      
+      {/* Delete button - only show for feature owner */}
+      {user && feature && user.id === feature.created_by && (
+        <TouchableOpacity
+          style={[
+            styles.deleteButton,
+            isDeleting && styles.deleteButtonDisabled
+          ]}
+          onPress={handleDelete}
+          disabled={isDeleting}
+        >
+          {isDeleting ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.deleteButtonText}>🗑️ Delete Feature</Text>
+          )}
+        </TouchableOpacity>
+      )}
       
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>
@@ -282,6 +344,21 @@ const styles = StyleSheet.create({
   },
   voteButtonTextActive: {
     color: 'white',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  deleteButtonDisabled: {
+    backgroundColor: '#FF9999',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   infoContainer: {
     backgroundColor: 'white',

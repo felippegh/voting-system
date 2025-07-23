@@ -95,3 +95,144 @@ Add documentation into a folder
 Double check the api, start it, run requests, make sure it's all working
 
 ok, now let's create the mobile frontend for this api, also let me know how I can test it in my mac
+
+check all project for files and folders that should be in the gitignore
+
+what else is missing for the FE?
+
+I want the FE to be as simple as possible to interact with the API we developed
+
+run the app
+
+wouldn't be better to start using the docker?
+
+it was stuck
+
+This site can't be reached
+The connection was reset.
+Try:
+
+Checking the connection
+Checking the proxy and the firewall
+ERR_CONNECTION_RESET
+
+go on
+
+This site can't be reached
+localhost refused to connect.
+Try:
+
+Checking the connection
+Checking the proxy and the firewall
+ERR_CONNECTION_REFUSED
+
+felippe@mac in ~/Projects/Personal/voting-system (main) >   docker compose up -d
+WARN[0000] /Users/felippe/Projects/Personal/voting-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 3/3
+ ✔ Container voting_database  Healthy                                                                                                                                                                1.4s 
+ ✔ Container voting_backend   Healthy                                                                                                                                                                2.0s 
+ ✔ Container voting_mobile    Started                                                                                                                                                                2.1s 
+felippe@mac in ~/Projects/Personal/voting-system (main) > \
+\
+Nothing appears, how do I test it
+
+This site can't be reached
+The connection was reset.
+Try:
+
+Checking the connection
+Checking the proxy and the firewall
+ERR_CONNECTION_RESET
+
+it was stuck
+
+go on
+
+This site can't be reached
+localhost refused to connect.
+Try:
+
+Checking the connection
+Checking the proxy and the firewall
+ERR_CONNECTION_REFUSED
+
+Looks like the command to run the app cannot be inside a docker, because requires interaction, is it possible to make it work with docker or it's better to leave it without it?
+
+you stopped to add the prompts to the file prompts.txt
+
+Looks like the command to run the app cannot be inside a docker, because requires interaction, is it possible to make it work with docker or it's better to leave it without it?\
+\
+felippe@mac in ~/Projects/Personal/voting-system/mobile (main) > ulimit -n 10240 && npx expo start --port 19000 --dev-client=false
+
+Development build: Unable to get the default URI scheme for the project. Please make sure the expo-dev-client package is installed.
+Starting project at /Users/felippe/Projects/Personal/voting-system/mobile
+Starting Metro Bundler
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+█ ▄▄▄▄▄ █▄▄▄ ▀ ▀█▄█ ▄▄▄▄▄ █
+█ █   █ ██▄▀ █  ▀▄█ █   █ █
+█ █▄▄▄█ ██▀▄ ▄▄██▀█ █▄▄▄█ █
+█▄▄▄▄▄▄▄█ ▀▄█ ▀▄█ █▄▄▄▄▄▄▄█
+█ ▄█  ▀▄▀█▄▀█▄██ ██▄▀▀▀▀▀▄█
+█ ▄▀▄█▀▄▄ ▄██▄█▄  ▄▄ ▀ ▀▀ █
+█ ▀▄▄██▄▀▄  █▀▀▄ ▀█▄▄▀██▀▄█
+█ ▄▄▄█ ▄ ▀███▀▄▀ █▀  █▄ ▄ █
+█▄█▄███▄▄ ▀▀ ▄▄ █ ▄▄▄ █▄ ██
+█ ▄▄▄▄▄ ██▄▄▀▄  ▀ █▄█ ▄██▄█
+█ █   █ █ █ ▄▀ ▀▄   ▄▄ █  █
+█ █▄▄▄█ █▀█  ▀ █▄▄▄█  █   █
+█▄▄▄▄▄▄▄█▄▄▄▄▄▄██▄▄▄██▄██▄█
+
+› Metro waiting on http://localhost:19000
+› Scan the QR code above to open the project in a development build. Learn more: https://expo.fyi/start
+
+› Using development build
+› Press s │ switch to Expo Go
+
+› Press a │ open Android
+› Press i │ open iOS simulator
+› Press w │ open web
+
+› Press j │ open debugger
+› Press r │ reload app
+› Press m │ toggle menu
+› Press o │ open project code in your editor
+
+› Press ? │ show all commands
+
+Logs for your project will appear below. Press Ctrl+C to exit.
+› Opening on iOS...
+CommandError: Required property 'ios.bundleIdentifier' is not found in the project app.json. This is required to open the app.
+
+› Press o │ open project code in your editor
+
+› Press ? │ show all commands
+
+Logs for your project will appear below. Press Ctrl+C to exit.
+› Opening on iOS...
+CommandError: No development build (com.votingsystem.mobile) for this project is installed. Please make and install a development build on the device first.
+Learn more: https://docs.expo.dev/development/build/
+
+I've got these errors when upvoting a feature and when creating a feature\
+iOS Bundling complete 4648ms
+ LOG  Error checking vote status: [TypeError: _api.votesAPI.getByFeature is not a function (it is undefined)]
+ ERROR  Error voting: [TypeError: _api.votesAPI.create is not a function (it is undefined)]
+ LOG  Error checking vote status: [TypeError: _api.votesAPI.getByFeature is not a function (it is undefined)]
+ ERROR  Error voting: [TypeError: _api.votesAPI.create is not a function (it is undefined)]
+ ERROR  Error voting: [TypeError: _api.votesAPI.create is not a function (it is undefined)]
+ ERROR  Error creating feature: [AxiosError: Request failed with status code 400]
+ ERROR  Error creating feature: [AxiosError: Request failed with status code 400]
+ ERROR  Error creating feature: [AxiosError: Request failed with status code 400]\
+\
+Also check on the docker logs for the api
+
+it was stuck reading the logs
+
+the delete functionality in the fe is not showing, and also when I add an upvote, instead of the number of votes increase from 3 to 4, it's addding a number besides the character, like 13
+
+I've got this error, also understand from the docker logs\
+ LOG  Error checking vote status: [TypeError: voteResponse.votes.some is not a function (it is undefined)]
+ ERROR  Error voting: [AxiosError: Request failed with status code 400]\
+\
+Also when I already voted for a feature, instead of the vote button, it should appear as voted
+
+why the web part is disabled?

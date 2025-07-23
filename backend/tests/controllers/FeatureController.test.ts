@@ -63,6 +63,7 @@ describe('FeatureController', () => {
       };
 
       mockReq.body = validFeatureData;
+      mockReq.user = { userId: 1, email: 'test@example.com' };
       mockFeatureModel.create.mockResolvedValue(createdFeature);
 
       await featureController.createFeature(mockReq as any, mockRes as any, mockNext);

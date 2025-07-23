@@ -32,6 +32,7 @@ describe('VoteController', () => {
       };
 
       mockReq.body = validVoteData;
+      mockReq.user = { userId: 1, email: 'test@example.com' };
       mockVoteModel.hasUserVoted.mockResolvedValue(false);
       mockVoteModel.create.mockResolvedValue(voteData);
       mockVoteModel.getCount.mockResolvedValue(5);
@@ -50,6 +51,7 @@ describe('VoteController', () => {
 
     it('should return 400 when user has already voted', async () => {
       mockReq.body = { featureId: 1 };
+      mockReq.user = { userId: 1, email: 'test@example.com' };
       mockVoteModel.hasUserVoted.mockResolvedValue(true);
 
       await voteController.vote(mockReq as any, mockRes as any, mockNext);
@@ -64,6 +66,7 @@ describe('VoteController', () => {
   describe('removeVote', () => {
     it('should remove vote successfully', async () => {
       mockReq.params = { featureId: '1' };
+      mockReq.user = { userId: 1, email: 'test@example.com' };
       mockVoteModel.remove.mockResolvedValue(true);
       mockVoteModel.getCount.mockResolvedValue(4);
 

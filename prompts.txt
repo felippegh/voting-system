@@ -236,3 +236,27 @@ I've got this error, also understand from the docker logs\
 Also when I already voted for a feature, instead of the vote button, it should appear as voted
 
 why the web part is disabled?
+
+So the docker for frontend will still be needed? Because the FE requires console interactions
+
+why do I need 2 docker compose
+
+also why there is a package.json and lock?
+
+why we have 2 .claude folders?
+
+but isn't a good idea go commit those?
+
+the database connection shouldn't come from my .env?
+
+I want to send the MCP configuration as ready as possible for the person using my code
+
+Add all setup instructions to the readme
+
+4 tests are failing, can you check?
+
+are my endpoints protected by auth? which ones are public?
+
+add this to the readme
+
+check the whole code for backend and frontend and then update the readme

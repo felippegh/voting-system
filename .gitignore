@@ -83,4 +83,7 @@ web-build/
 .react-native/
 
 # Claude Code
-.claude-code/
+.claude-code/mcp.json
+.claude/
+
+# Note: .claude-code/mcp.json.template is committed as a template

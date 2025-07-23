@@ -1,4 +1,5 @@
-version: '3.8'
+# Voting System - Backend + Database
+# Frontend runs locally: cd mobile && npm start
 
 services:
   database:

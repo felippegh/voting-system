@@ -122,6 +122,35 @@ Backend configuration is handled through environment variables in `backend/.env`
 - `JWT_EXPIRES_IN` - JWT token expiration (default: 24h)
 - `BCRYPT_SALT_ROUNDS` - Password hashing rounds (default: 10)
 - `DB_POOL_MIN/MAX` - Connection pool size (default: 2/10)
+
+## Claude Code Setup
+
+This project includes PostgreSQL MCP configuration for database querying.
+
+**Quick Setup:**
+```bash
+# Copy the MCP template (already configured for this project)
+cp .claude-code/mcp.json.template .claude-code/mcp.json
+```
+
+**Manual Setup:** If the template doesn't exist, create `.claude-code/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://postgres:password@localhost:5433/voting_system"
+      }
+    }
+  }
+}
+```
+
+**Usage:** Use `/mcp` commands to query the database directly during development.
+
+**Note:** The connection string matches the Docker Compose database configuration.
 - `LOG_LEVEL` - Morgan logging format (default: combined)
 - `CORS_ORIGIN` - CORS allowed origins (default: *)
 - `DB_QUERY_LOGGING` - Enable query logging (default: true)

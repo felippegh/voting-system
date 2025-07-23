@@ -1,0 +1,526 @@
+{
+  "info": {
+    "_postman_id": "voting-system-api",
+    "name": "Voting System API",
+    "description": "A full-stack voting system where users can post feature requests and upvote others. Built with Express.js + TypeScript + PostgreSQL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('authToken', response.token);",
+                  "    pm.environment.set('userId', response.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account. Returns user details and JWT token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n    \"message\": \"User registered successfully\",\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+            },
+            {
+              "name": "User Already Exists",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n    \"error\": \"User already exists with this email\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('authToken', response.token);",
+                  "    pm.environment.set('userId', response.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with existing credentials. Returns user details and JWT token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"message\": \"Login successful\",\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+            },
+            {
+              "name": "Invalid Credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n    \"error\": \"Invalid credentials\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current user profile. Requires authentication."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\",\n        \"created_at\": \"2024-01-01T00:00:00.000Z\"\n    }\n}"
+            },
+            {
+              "name": "Not Authenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n    \"error\": \"No authorization header provided\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Features",
+      "item": [
+        {
+          "name": "Get All Features",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/features",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features"]
+            },
+            "description": "Get all features with vote counts. Public endpoint - no authentication required."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"features\": [\n        {\n            \"id\": 1,\n            \"title\": \"Dark Mode\",\n            \"description\": \"Add dark mode support\",\n            \"created_by\": 1,\n            \"created_at\": \"2024-01-01T00:00:00.000Z\",\n            \"updated_at\": \"2024-01-01T00:00:00.000Z\",\n            \"created_by_username\": \"john_doe\",\n            \"vote_count\": 5\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Feature",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Dark Mode Support\",\n    \"description\": \"Add the ability to switch between light and dark themes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/features",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features"]
+            },
+            "description": "Create a new feature request. Requires authentication."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n    \"feature\": {\n        \"id\": 1,\n        \"title\": \"Dark Mode Support\",\n        \"description\": \"Add the ability to switch between light and dark themes\",\n        \"created_by\": 1,\n        \"created_at\": \"2024-01-01T00:00:00.000Z\",\n        \"updated_at\": \"2024-01-01T00:00:00.000Z\"\n    },\n    \"message\": \"Feature created successfully\"\n}"
+            },
+            {
+              "name": "Invalid Input",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n    \"error\": \"Invalid input\",\n    \"details\": [\n        {\n            \"code\": \"too_small\",\n            \"minimum\": 1,\n            \"type\": \"string\",\n            \"inclusive\": true,\n            \"exact\": false,\n            \"message\": \"String must contain at least 1 character(s)\",\n            \"path\": [\"title\"]\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Feature by ID",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/features/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features", "1"]
+            },
+            "description": "Get a specific feature by ID. Public endpoint - no authentication required."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"feature\": {\n        \"id\": 1,\n        \"title\": \"Dark Mode\",\n        \"description\": \"Add dark mode support\",\n        \"created_by\": 1,\n        \"created_at\": \"2024-01-01T00:00:00.000Z\",\n        \"updated_at\": \"2024-01-01T00:00:00.000Z\",\n        \"created_by_username\": \"john_doe\",\n        \"vote_count\": 5\n    }\n}"
+            },
+            {
+              "name": "Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n    \"error\": \"Feature not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Feature",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Dark Mode Support (Updated)\",\n    \"description\": \"Add comprehensive dark mode with system preference detection\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/features/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features", "1"]
+            },
+            "description": "Update an existing feature. Requires authentication and you must be the owner of the feature."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"feature\": {\n        \"id\": 1,\n        \"title\": \"Dark Mode Support (Updated)\",\n        \"description\": \"Add comprehensive dark mode with system preference detection\",\n        \"created_by\": 1,\n        \"created_at\": \"2024-01-01T00:00:00.000Z\",\n        \"updated_at\": \"2024-01-01T12:00:00.000Z\"\n    },\n    \"message\": \"Feature updated successfully\"\n}"
+            },
+            {
+              "name": "Forbidden - Not Owner",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n    \"error\": \"You can only update your own features\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Feature",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/features/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "features", "1"]
+            },
+            "description": "Delete a feature. Requires authentication and you must be the owner of the feature."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"message\": \"Feature deleted successfully\"\n}"
+            },
+            {
+              "name": "Forbidden - Not Owner",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n    \"error\": \"You can only delete your own features\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Votes",
+      "item": [
+        {
+          "name": "Vote for Feature",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"featureId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/votes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "votes"]
+            },
+            "description": "Vote for a feature. Requires authentication. Each user can only vote once per feature."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n    \"vote\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"feature_id\": 1,\n        \"created_at\": \"2024-01-01T00:00:00.000Z\"\n    },\n    \"voteCount\": 6,\n    \"message\": \"Vote recorded successfully\"\n}"
+            },
+            {
+              "name": "Already Voted",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n    \"error\": \"User has already voted for this feature\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Vote",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/votes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "votes", "1"]
+            },
+            "description": "Remove your vote from a feature. Requires authentication."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"voteCount\": 5,\n    \"message\": \"Vote removed successfully\"\n}"
+            },
+            {
+              "name": "Vote Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n    \"error\": \"Vote not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Feature Votes",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/votes/feature/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "votes", "feature", "1"]
+            },
+            "description": "Get vote information for a specific feature. Public endpoint - no authentication required."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"voteCount\": 5,\n    \"votes\": 5,\n    \"voters\": [\n        {\n            \"userId\": 1,\n            \"votedAt\": \"2024-01-01T00:00:00.000Z\"\n        },\n        {\n            \"userId\": 2,\n            \"votedAt\": \"2024-01-01T01:00:00.000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Status",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API is running. Public endpoint."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"status\": \"ok\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

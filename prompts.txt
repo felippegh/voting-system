@@ -1,0 +1,97 @@
+For each prompt I give you, write to a file prompts.txt, so I can audit the work.
+
+You are a senior software Engineer, remember this.
+
+Let's create a simple voting system, this was given as a task assignment to me.
+Main Feature Voting System – Let users post a feature and upvote others
+
+The project must have:
+- A database
+- A backend API
+- A frontend UI: CHOOSE ONE native mobile: iOS or Android
+
+propose to me what are the best technologies for this project and how you believe it's be the way to structure this project
+
+Yes, I also want it to be all dockerized so I can run the whole project under a single command, but I also should be able to run the BE and FE separately via docker if I want to
+
+docker-compose -f docker-compose.backend.yml up
+
+make sure my api is running on the latest Node lts version
+
+run some requests to make sure it's working and connecting to the database
+
+Which MCPs can I add to this project so my claude code can have context about the database and make faster and easier queries
+
+Let's add PostgreSQL MCP
+
+is it correct to install it globally?     
+
+ok, so let's install globally instead of locally     
+
+before I restart it, can you make sure the PostgreSQL MCP was installed correctly?  
+
+/mcp      
+
+/init  
+
+I've installed a PostgreSQL MCP and restarted Claude, now make sure my mcp is working 
+
+Go ahead and add it   
+
+go ahead  
+
+Test the MCP running some sql commands through it  
+
+/mcp         
+
+Test the MCP running some sql commands through it   
+
+/init
+
+Add a .env to the backend and add all variables there that should not be hardcoded in the api  
+
+now let's add unit tests to the backend using jest 
+
+I want the folder __tests__ to be renamed to tests and move it to the root folder backend     
+
+Grab all prompts from this session and add them to the prompts.txt file, also for each new prompt I give you, also add it to a file prompts.txt, so I can audit the work. 
+
+Don't change anything that is already in the prompts.txt file, but grab all prompts I've sent you on this session and add them to the prompts.txt file, also for each new prompt I give you from now on,  add it to the file prompts.txt, so I can audit the work.
+
+From now on, every prompt I send, add it to the prompts.txt file
+
+run the be unit tests to make sure the api is all working now
+
+u sure? when I run npm run test it's all failling
+
+38 are still failling 21 has passed   
+
+Please continue the conversation from where we left it off without asking the user any further questions. Continue with the last task that you were asked to work on.
+
+Are you sure all those tests are necessary?
+
+Yes, go ahead
+
+instead of removing, can't you just modify the existing files to remove the uncessesary tests?
+
+ok, now run it
+
+now check my whole backend if there is anything left
+
+fix TypeScript Build Errors
+
+I don't want lint on this project you can remove it
+
+Authentication Middleware Missing, how can I use simple authentication to protect the endpoints
+
+Recheck the whole api, look for missing parts or things that could cause issues, order by severity
+
+Just fix this Missing Authorization for Updates/Deletes
+
+Create a postman documentation for the api
+
+Add documentation into a folder
+
+Double check the api, start it, run requests, make sure it's all working
+
+ok, now let's create the mobile frontend for this api, also let me know how I can test it in my mac
